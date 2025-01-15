@@ -3,7 +3,6 @@ package com.example.service_shuffle.service;
 import com.example.service_shuffle.data.dto.ShuffleLogRequest;
 import com.example.service_shuffle.data.dto.ShuffleRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,10 +12,10 @@ import java.util.stream.IntStream;
 @Service
 public class ShuffleService {
 
-    private final RestTemplate rest;
+    private final LogService logService;
 
-    public ShuffleService(RestTemplate rest) {
-        this.rest = rest;
+    public ShuffleService(LogService logService) {
+        this.logService = logService;
     }
 
     public Integer[] shuffle(ShuffleRequest request) {
@@ -26,7 +25,7 @@ public class ShuffleService {
 
         ShuffleLogRequest logRequest =
                 new ShuffleLogRequest(start, request.number(), System.currentTimeMillis() - start);
-        rest.postForObject("log", logRequest, Void.class);
+        logService.sendLogRequest(logRequest);
 
         return list.toArray(new Integer[0]);
     }
